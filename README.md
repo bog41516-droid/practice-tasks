@@ -14,7 +14,7 @@
 
 ## Ссылки
 
-- [Код задачи №1](practice-tasks/task1/solution.py)
+- [Код задачи №1](practice-tasks/task1/solution.py.py)
 - [Код задачи №2](practice-tasks/task2/inheritance_demo.py)
 - [SQL задачи №3](practice-tasks/task3/tourism_db.sql)
 - [Отчёт по задаче №5](practice-tasks/task5/analytical_review.md)
