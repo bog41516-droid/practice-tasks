@@ -2,47 +2,64 @@
 # -*- coding: utf-8 -*-
 
 """
-Модульные тесты для функции sum_neg_between_max_min.
+Модуль для вычисления суммы отрицательных элементов между максимумом и минимумом.
 """
 
-import unittest
-from solution import sum_neg_between_max_min  # предполагается, что solution.py лежит в родительской папке
+from typing import List, Union
 
+def sum_neg_between_max_min(arr: List[Union[int, float]]) -> Union[int, float]:
+    """
+    Вычисляет сумму отрицательных элементов, расположенных между максимальным
+    и минимальным элементами массива (не включая сами экстремумы).
 
-class TestSumNegBetween(unittest.TestCase):
-    """Набор тестов для функции sum_neg_between_max_min."""
+    Аргументы:
+        arr (list of int/float): список чисел.
 
-    def test_mixed_numbers(self):
-        self.assertEqual(sum_neg_between_max_min([5, -2, 8, -3, 1, -7, 4]), -3)
+    Возвращает:
+        int/float: сумма отрицательных элементов в интервале.
+                   Если массив содержит менее 2 элементов, возвращает 0.
 
-    def test_all_positive(self):
-        self.assertEqual(sum_neg_between_max_min([1, 2, 3]), 0)
+    Примеры:
+        >>> sum_neg_between_max_min([5, -2, 8, -3, 1, -7, 4])
+        -3
+        >>> sum_neg_between_max_min([1, 2, 3])
+        0
+        >>> sum_neg_between_max_min([-5, -10, -2, 0, 4])
+        -2
+    """
+    if len(arr) < 2:
+        return 0
 
-    def test_all_negative(self):
-        # массив только отрицательных: максимум = -1 (индекс 2), минимум = -5 (индекс 0)
-        # между ними индексы 1,2 -> элемент -2, -1? Но -1 это максимум, не входит. 
-        # На самом деле arr = [-5, -2, -1], максимум -1 индекс 2, минимум -5 индекс 0, между индекс 1 -> -2, сумма -2.
-        self.assertEqual(sum_neg_between_max_min([-5, -2, -1]), -2)
+    idx_max = 0
+    idx_min = 0
+    for i in range(1, len(arr)):
+        if arr[i] > arr[idx_max]:
+            idx_max = i
+        if arr[i] < arr[idx_min]:
+            idx_min = i
 
-    def test_with_zero(self):
-        self.assertEqual(sum_neg_between_max_min([-5, -10, -2, 0, 4]), -2)
+    left = min(idx_max, idx_min)
+    right = max(idx_max, idx_min)
 
-    def test_single_element(self):
-        self.assertEqual(sum_neg_between_max_min([7]), 0)
-
-    def test_empty_list(self):
-        self.assertEqual(sum_neg_between_max_min([]), 0)
-
-    def test_two_elements(self):
-        # между ними нет элементов -> 0
-        self.assertEqual(sum_neg_between_max_min([1, -5]), 0)
-
-    def test_equal_elements(self):
-        self.assertEqual(sum_neg_between_max_min([3, 3, 3]), 0)
-
-    def test_float_numbers(self):
-        self.assertAlmostEqual(sum_neg_between_max_min([2.5, -1.2, 0.5, -3.1, 4.0]), -1.2)
+    total = 0
+    for i in range(left + 1, right):
+        if arr[i] < 0:
+            total += arr[i]
+    return total
 
 
 if __name__ == '__main__':
-    unittest.main()
+    # Демонстрационные примеры (для быстрой проверки)
+    test_arrays = [
+        ([5, -2, 8, -3, 1, -7, 4], -3),
+        ([1, 2, 3], 0),
+        ([-5, -10, -2, 0, 4], -2),   # исправлено: было 0, стало -2
+        ([0, -10, 5, -3, 2], -10),
+        ([7], 0),
+        ([], 0),
+    ]
+    for arr, expected in test_arrays:
+        result = sum_neg_between_max_min(arr)
+        print(f"{arr} -> {result} (ожидалось {expected})")
+        assert result == expected, f"Ошибка: {arr} дало {result}, а должно {expected}"
+    print("Все демо-тесты пройдены.")
